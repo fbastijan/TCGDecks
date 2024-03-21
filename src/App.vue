@@ -1,10 +1,12 @@
 <template>
   <nav
     class="navbar navbar-expand-lg bg-body-tertiary navbar-dark"
-    style="background-color: #242582"
+    style="background-color: #222831"
   >
     <div class="container-fluid">
-      <a class="navbar-brand" style="color: #f64c72" href="#">Tcg Decks</a>
+      <a class="navbar-brand fw-bold" style="color: #76abae" href="#"
+        >Tcg Decks</a
+      >
       <button
         class="navbar-toggler"
         type="button"
@@ -19,7 +21,9 @@
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
           <a class="nav-link" href="#"
-            ><router-link to="/" style="text-decoration: none; color: inherit"
+            ><router-link
+              to="/home"
+              style="text-decoration: none; color: inherit"
               >Home</router-link
             ></a
           >
@@ -59,19 +63,15 @@
       </div>
     </div>
   </nav>
-
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="container-fluid">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
 export default {
   name: "App",
-  components: {
-    HelloWorld,
-  },
+  components: {},
 };
 </script>
 
@@ -81,6 +81,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-color: #2f2fa2;
+}
+body {
+  background-color: #76abae;
 }
 </style>
