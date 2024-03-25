@@ -12,7 +12,7 @@
             <div class="row d-flex align-items-center">
               <div class="col">
                 <h1 class="card-title display-5 mb-5" style="color: #eeeeee">
-                  Lets get you started!
+                  Započnimo!
                 </h1>
 
                 <div class="form-floating mb-3 reg-form">

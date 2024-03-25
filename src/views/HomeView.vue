@@ -1,18 +1,27 @@
 <template>
   <div class="row align-items-center" style="min-height: 80vh">
     <div class="jumbotron">
-      <h1 class="display-4">Hello, world!</h1>
+      <h1 class="display-6">Tcg Decks je moćna stranica za prikaz deckova.</h1>
+      <div class="row">
+        <div class="col"></div>
+        <div class="mb-3 col-lg-6 col-sm-12 reg-form">
+          <input
+            type="username"
+            class="form-control-lg reg-form bg-dark"
+            style="width: 100%"
+          />
+        </div>
+        <div class="col" style="color: #eeeeee"></div>
+      </div>
+
       <p class="lead">
-        This is a simple hero unit, a simple jumbotron-style component for
-        calling extra attention to featured content or information.
-      </p>
-      <hr class="my-4" />
-      <p>
-        It uses utility classes for typography and spacing to space content out
-        within the larger container.
-      </p>
-      <p class="lead">
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        <a
+          class="btn btn-lg bg-dark"
+          style="color: #eeeeee"
+          href="#"
+          role="button"
+          >Search decks</a
+        >
       </p>
     </div>
   </div>
@@ -22,4 +31,21 @@
 export default {};
 </script>
 
-<style></style>
+<style scoped>
+.reg-form {
+  border-color: #eeeeee;
+  color: #eeeeee;
+}
+.my-label {
+  color: #eeeeee !important;
+}
+.form-button:not(:hover) {
+  border-color: #eeeeee;
+  color: #eeeeee;
+}
+.form-button:hover {
+  background-color: #eeeeee;
+  color: #222831;
+  border-color: #eeeeee;
+}
+</style>

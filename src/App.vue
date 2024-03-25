@@ -21,9 +21,7 @@
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
           <a class="nav-link" href="#"
-            ><router-link
-              to="/home"
-              style="text-decoration: none; color: inherit"
+            ><router-link to="/" style="text-decoration: none; color: inherit"
               >Home</router-link
             ></a
           >
