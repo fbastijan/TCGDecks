@@ -3,11 +3,13 @@ import LoginView from "@/views/LoginView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import HomeView from "@/views/HomeView.vue";
 import ProfileView from "@/views/ProfileView.vue";
+import DeckView from "@/views/DeckView.vue";
 const routes = [
   { path: "/login", component: LoginView },
   { path: "/register", component: RegisterView },
   { path: "/", component: HomeView },
   { path: "/profile", component: ProfileView },
+  { path: "/deck/:id", component: DeckView },
 ];
 
 const router = createRouter({
