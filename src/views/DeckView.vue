@@ -51,14 +51,29 @@
         <div class="card-body">
           <h5 class="card-title display-6">Ratings</h5>
           <h6 class="card-title mb-2">Score: 5.0</h6>
-          <p class="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </p>
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
+          <div
+            class="list-group"
+            v-for="(komentar, index) in this.komentari"
+            :key="index"
+          >
+            <komentar-comp :info="komentar"></komentar-comp>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+<script>
+import KomentarVue from "@/components/Komentar.vue";
+import { komentari } from "@/store";
+export default {
+  components: {
+    "komentar-comp": KomentarVue,
+  },
+  data() {
+    return {
+      komentari,
+    };
+  },
+};
+</script>
