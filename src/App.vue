@@ -27,9 +27,9 @@
           >
           <a class="nav-link" href="#"
             ><router-link
-              to="/menucreator"
+              to="/decklist/creator"
               style="text-decoration: none; color: inherit"
-              >Make your menu</router-link
+              >Make your decklist</router-link
             ></a
           >
         </div>
