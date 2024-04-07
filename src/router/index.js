@@ -5,6 +5,7 @@ import HomeView from "@/views/HomeView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import DeckView from "@/views/DeckView.vue";
 import CreatorView from "@/views/CreatorView.vue";
+import SearchResultView from "@/views/SearchResultView.vue";
 const routes = [
   { path: "/login", component: LoginView },
   { path: "/register", component: RegisterView },
@@ -12,6 +13,7 @@ const routes = [
   { path: "/profile", component: ProfileView },
   { path: "/deck/:id", component: DeckView },
   { path: "/decklist/creator", component: CreatorView },
+  { path: "/search/:keyWords/result", component: SearchResultView },
 ];
 
 const router = createRouter({

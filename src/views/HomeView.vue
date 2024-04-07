@@ -6,7 +6,7 @@
         <div class="col"></div>
         <div class="mb-3 col-lg-6 col-sm-12 reg-form">
           <input
-            type="username"
+            v-model="term"
             class="form-control-lg reg-form bg-dark"
             style="width: 100%"
           />
@@ -20,6 +20,8 @@
           style="color: #eeeeee"
           href="#"
           role="button"
+          v-bind:disabled="term"
+          @click="search()"
           >Search decks</a
         >
       </p>
@@ -28,7 +30,18 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      term: "",
+    };
+  },
+  methods: {
+    search() {
+      if (this.term) this.$router.push("/search/" + this.term + "/result");
+    },
+  },
+};
 </script>
 
 <style scoped>
