@@ -35,14 +35,18 @@
         </div>
 
         <div class="navbar-nav ms-auto">
-          <a class="nav-link" aria-current="page" href="#"
+          <a
+            class="nav-link"
+            aria-current="page"
+            href="#"
+            v-if="!UserData.currentUser"
             ><router-link
               to="/login"
               style="text-decoration: none; color: inherit"
               >Login</router-link
             ></a
           >
-          <a class="nav-link" href="#"
+          <a class="nav-link" href="#" v-if="!UserData.currentUser"
             ><router-link
               to="/register"
               style="text-decoration: none; color: inherit"
@@ -56,7 +60,7 @@
               >Profil</router-link
             ></a
           >
-          <a class="nav-link" href="#">Odjava</a>
+          <a class="nav-link" href="#" @click="odjava()">Odjava</a>
         </div>
       </div>
     </div>
@@ -67,7 +71,52 @@
 </template>
 
 <script>
+import router from "@/router";
+import { UserData } from "@/store";
+import { auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+
+onAuthStateChanged(auth, (user) => {
+  const currentRoute = router.currentRoute;
+
+  //console.log('PROVJERA STANJA LOGINA!');
+  if (user) {
+    // User is signed in.
+    console.log("*** User", user.email);
+    UserData.currentUser.value = user.email;
+
+    if (!currentRoute.value.meta.needsUser) {
+      router.push("/");
+    }
+  } else {
+    // User is not signed in.
+    console.log("*** No user");
+    UserData.currentUser.value = null;
+
+    if (currentRoute.value.meta.needsUser) {
+      router.push("/login");
+    }
+  }
+});
 export default {
+  data() {
+    return {
+      UserData,
+    };
+  },
+
+  methods: {
+    odjava() {
+      auth
+        .signOut()
+        .then(() => {
+          this.$router.push("/login");
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+  },
   name: "App",
   components: {},
 };

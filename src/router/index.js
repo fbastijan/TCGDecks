@@ -6,18 +6,73 @@ import ProfileView from "@/views/ProfileView.vue";
 import DeckView from "@/views/DeckView.vue";
 import CreatorView from "@/views/CreatorView.vue";
 import SearchResultView from "@/views/SearchResultView.vue";
+import { UserData } from "@/store";
 const routes = [
-  { path: "/login", component: LoginView },
-  { path: "/register", component: RegisterView },
-  { path: "/", component: HomeView },
-  { path: "/profile", component: ProfileView },
-  { path: "/deck/:id", component: DeckView },
-  { path: "/decklist/creator", component: CreatorView },
-  { path: "/search/:keyWords/result", component: SearchResultView },
+  {
+    path: "/login",
+    component: LoginView,
+    meta: {
+      needsUser: false,
+    },
+  },
+  {
+    path: "/register",
+    component: RegisterView,
+    meta: {
+      needsUser: false,
+    },
+  },
+  {
+    path: "/",
+    component: HomeView,
+    meta: {
+      needsUser: true,
+    },
+  },
+  {
+    path: "/profile",
+    component: ProfileView,
+    meta: {
+      needsUser: true,
+    },
+  },
+  {
+    path: "/deck/:id",
+    component: DeckView,
+    meta: {
+      needsUser: true,
+    },
+  },
+  {
+    path: "/decklist/creator",
+    component: CreatorView,
+    meta: {
+      needsUser: true,
+    },
+  },
+  {
+    path: "/search/:keyWords/result",
+    component: SearchResultView,
+    meta: {
+      needsUser: true,
+    },
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  //console.log('Stara ruta', from.name, ' -> ', to.name, 'korisnik', store.currentUser);
+
+  const noUser = UserData.currentUser === null;
+
+  if (noUser && to.meta.needsUser) {
+    next("login");
+  } else {
+    next();
+  }
 });
 export default router;

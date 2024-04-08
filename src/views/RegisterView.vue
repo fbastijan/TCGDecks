@@ -20,20 +20,15 @@
                     type="email"
                     class="form-control reg-form bg-dark"
                     placeholder="name@example.com"
+                    v-model="email"
                   />
                   <label>Email address</label>
                 </div>
-                <div class="form-floating mb-3 reg-form">
-                  <input
-                    type="username"
-                    class="form-control reg-form bg-dark"
-                    placeholder="username"
-                  />
-                  <label>Username</label>
-                </div>
+
                 <div class="form-floating mb-3 reg-form bg-dark">
                   <input
                     type="password"
+                    v-model="password"
                     class="form-control reg-form bg-dark"
                     placeholder="Password"
                   />
@@ -51,6 +46,7 @@
                 <a
                   href="#"
                   class="btn custom-btn-2 btn btn-outline-danger btn-lg my-3 form-button"
+                  @click="signup"
                   >Register</a
                 >
               </div>
@@ -62,7 +58,35 @@
     </div>
   </div>
 </template>
-<script></script>
+<script>
+import { auth } from "@/firebase.js";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+      password_repeat: "",
+    };
+  },
+  methods: {
+    signup() {
+      createUserWithEmailAndPassword(auth, this.email, this.password)
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user);
+          console.log("WAWAWIWA GREAT SUCCESS");
+          // ...
+        })
+        .catch((error) => {
+          alert(error.message);
+          // ..
+        });
+    },
+  },
+};
+</script>
 <style scoped>
 .reg-form {
   border-color: #eeeeee;

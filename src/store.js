@@ -71,4 +71,8 @@ const komentari = [
   },
 ];
 
-export { komentari };
+import { ref } from "vue";
+const UserData = {
+  currentUser: ref("test@test.hr"),
+};
+export { komentari, UserData };

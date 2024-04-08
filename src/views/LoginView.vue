@@ -17,17 +17,19 @@
 
                 <div class="form-floating mb-3 reg-form">
                   <input
-                    type="username"
+                    type="email"
                     class="form-control reg-form bg-dark"
-                    placeholder="username"
+                    placeholder="Email"
+                    v-model="email"
                   />
-                  <label>Username</label>
+                  <label>Email</label>
                 </div>
                 <div class="form-floating mb-3 reg-form bg-dark">
                   <input
                     type="password"
                     class="form-control reg-form bg-dark"
                     placeholder="Password"
+                    v-model="password"
                   />
                   <label>Password</label>
                 </div>
@@ -35,6 +37,7 @@
                 <a
                   href="#"
                   class="btn custom-btn-2 btn btn-outline-danger btn-lg mt-3 mb-3 form-button"
+                  @click="signIn()"
                   >Login</a
                 >
               </div>
@@ -46,7 +49,32 @@
     </div>
   </div>
 </template>
-<script></script>
+<script>
+import { auth } from "@/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    signIn() {
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          // ...
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    },
+  },
+};
+</script>
 <style scoped>
 .reg-form {
   border-color: #eeeeee;
