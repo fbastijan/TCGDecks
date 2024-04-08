@@ -25,7 +25,7 @@
               >Home</router-link
             ></a
           >
-          <a class="nav-link" href="#"
+          <a class="nav-link" href="#" v-if="UserData.currentUser"
             ><router-link
               to="/decklist/creator"
               style="text-decoration: none; color: inherit"
@@ -53,14 +53,24 @@
               >Register</router-link
             ></a
           >
-          <a class="nav-link" aria-current="page" href="#"
+          <a
+            class="nav-link"
+            aria-current="page"
+            href="#"
+            v-if="UserData.currentUser"
             ><router-link
               to="/profile"
               style="text-decoration: none; color: inherit"
               >Profil</router-link
             ></a
           >
-          <a class="nav-link" href="#" @click="odjava()">Odjava</a>
+          <a
+            class="nav-link"
+            href="#"
+            @click="odjava()"
+            v-if="UserData.currentUser"
+            >Odjava</a
+          >
         </div>
       </div>
     </div>
