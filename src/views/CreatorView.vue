@@ -12,6 +12,12 @@
           <div>
             <a href="#">change image</a>
           </div>
+          <input
+            class="form-control my-3"
+            type="text"
+            placeholder="Deck name"
+            aria-label="default input example"
+          />
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
               <button
@@ -171,7 +177,10 @@
   </div>
 </template>
 <script>
+import { ScryfallApi } from "@/api.js";
+
 export default {
+  components: {},
   data() {
     return {
       editorMain:
@@ -180,10 +189,15 @@ export default {
         "1 Aclazotz, Deepest Betrayal\n1 Blot Out\n1 Cut Down\n1 Disdainful Stroke\n3 Glistening Deluge\n1 Disdainful Stroke\n2 Spell Pierce\n2 Tishana's Tidebinder\n1 Unlicensed Hearse\n2 Liliana of the Veil",
       MainDeck: [],
       Sideboard: [],
+      cities: ["Bangalore", "Chennai", "Cochin", "Delhi", "Kolkata", "Mumbai"],
+
+      value: "",
     };
   },
-  mounted() {
+  async mounted() {
     this.completeList();
+    let result = await ScryfallApi.getCardByName("Lightning Bolt");
+    console.log(result.data.name);
   },
   methods: {
     completeList() {
