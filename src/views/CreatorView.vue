@@ -68,7 +68,30 @@
                 ></textarea>
                 <div class="row g-3">
                   <div class="col-auto">
-                    <input class="form-control" placeholder="Card Name" />
+                    <input
+                      class="form-control"
+                      placeholder="Card Name"
+                      v-model="searchMainDeck"
+                      @focus="inputflag = true"
+                      @blur="handleBlur"
+                    />
+                    <select
+                      style="position: absolute; z-index: 3; width: auto"
+                      class="form-select"
+                      multiple
+                      aria-label="multiple select example"
+                      v-if="autoCompleteList.length > 0 /* && inputflag */"
+                    >
+                      <option
+                        class="myoption"
+                        v-for="(card, index) in autoCompleteList"
+                        :key="index"
+                        :value="card"
+                        @click="changeInputMain(card)"
+                      >
+                        {{ card }}
+                      </option>
+                    </select>
                   </div>
                   <div class="col-auto">
                     <button class="btn btn-primary mb-3">Dodaj na listu</button>
@@ -189,21 +212,43 @@ export default {
         "1 Aclazotz, Deepest Betrayal\n1 Blot Out\n1 Cut Down\n1 Disdainful Stroke\n3 Glistening Deluge\n1 Disdainful Stroke\n2 Spell Pierce\n2 Tishana's Tidebinder\n1 Unlicensed Hearse\n2 Liliana of the Veil",
       MainDeck: [],
       Sideboard: [],
-      cities: ["Bangalore", "Chennai", "Cochin", "Delhi", "Kolkata", "Mumbai"],
-
-      value: "",
+      autoCompleteList: [],
+      searchMainDeck: "",
+      searchSideBoard: "",
+      inputflag: false,
     };
+  },
+  watch: {
+    searchMainDeck: async function (value) {
+      // binding this to the data value in the email input
+
+      this.searchMainDeck = value;
+      let result = await ScryfallApi.getListofCardNames(value);
+      this.autoCompleteList = result.data.data;
+    },
   },
   async mounted() {
     this.completeList();
-    let result = await ScryfallApi.getCardByName("Lightning Bolt");
-    console.log(result.data.name);
   },
   methods: {
     completeList() {
       this.MainDeck = this.editorMain.split("\n");
       this.Sideboard = this.editorSide.split("\n");
     },
+    changeInputMain(any) {
+      this.searchMainDeck = any;
+    },
+    handleBlur() {
+      setTimeout(() => {
+        this.autoCompleteList = [];
+      }, 100);
+    },
   },
 };
 </script>
+<style scoped>
+.myoption:hover {
+  background-color: #0d6efd !important;
+  color: white;
+}
+</style>

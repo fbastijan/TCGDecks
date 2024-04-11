@@ -11,5 +11,11 @@ const ScryfallApi = {
     });
     return response;
   },
+  async getListofCardNames(anyString) {
+    let response = await Service.get("/cards/autocomplete", {
+      params: { q: anyString },
+    });
+    return response;
+  },
 };
 export { ScryfallApi };
