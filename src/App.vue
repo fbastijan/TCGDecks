@@ -94,6 +94,7 @@ onAuthStateChanged(auth, (user) => {
     // User is signed in.
     console.log("*** User", user.email);
     UserData.currentUser.value = user.email;
+    UserData.currentUserId.value = user.uid;
 
     if (!currentRoute.value.meta.needsUser) {
       router.push("/");

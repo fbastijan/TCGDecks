@@ -1,88 +1,13 @@
 <template>
   <div>
     <div class="row mx-5 row-cols-lg-2 row-cols-sm-1 row-cols-xs-1">
-      <div class="card col-sm-12 shadow col-lg-8 mt-5">
-        <div class="card-body">
-          <h5 class="card-title display-5">Deck Name</h5>
-          <img
-            src="https://placehold.co/150"
-            class="rounded-circle mb-2"
-            alt=""
-          />
-          <h6 class="card-subtitle mb-2 text-muted">by: player 1</h6>
-          <div class="row">
-            <div class="col">
-              <h5 class="card-title">Main Deck</h5>
-              <ul class="list-group list-group-flush my-3">
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-              </ul>
-              <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
-                60 Cards
-              </h6>
-            </div>
-
-            <div class="col">
-              <h5 class="card-title">Side Deck</h5>
-              <ul class="list-group list-group-flush my-3">
-                <li class="list-group-item d-flex flex-row">4 Jackal pup</li>
-                <li class="list-group-item d-flex flex-row">4 Jackal pup</li>
-                <li class="list-group-item d-flex flex-row">4 Jackal pup</li>
-                <li class="list-group-item d-flex flex-row">4 Jackal pup</li>
-                <li class="list-group-item d-flex flex-row">4 Jackal pup</li>
-                <li class="list-group-item d-flex flex-row">4 Jackal pup</li>
-              </ul>
-              <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
-                15 Cards
-              </h6>
-            </div>
-          </div>
-        </div>
+      <div class="col-sm-12 col-lg-8 mt-5">
+        <entire-deck
+          :mainDeck="this.deck.mainDeck"
+          :sideboard="this.deck.sideboard"
+          :deckAndPlayer="this.deck.playerAndDeck"
+        ></entire-deck>
       </div>
-
       <div class="col-sm-12 col-lg-4 mt-5">
         <div class="card">
           <h5 class="card-title my-3">Other decks</h5>
@@ -205,16 +130,36 @@
 <script>
 import KomentarVue from "@/components/Komentar.vue";
 import { komentari } from "@/store";
+import EntireDeckCard from "@/components/EntireDeckCard.vue";
+import { db } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default {
   components: {
     "komentar-comp": KomentarVue,
+    "entire-deck": EntireDeckCard,
+  },
+  async mounted() {
+    await this.getDeck();
+  },
+  methods: {
+    async getDeck() {
+      try {
+        const docRef = doc(db, "decks", this.$route.params.id);
+        const docSnap = await getDoc(docRef);
+        this.deck = docSnap.data();
+        console.log(this.deck);
+      } catch (e) {
+        console.error(e);
+      }
+    },
   },
   data() {
     return {
       komentari,
       showMore: 3,
       rating: 0,
+      deck: { playerAndDeck: { deckName: "" }, sideboard: [], mainDeck: [] },
     };
   },
 };

@@ -11,7 +11,7 @@
       class="form-select"
       multiple
       aria-label="multiple select example"
-      v-if="autoCompleteList.length > 0"
+      v-if="autoCompleteList.length > 0 && flag"
     >
       <option
         class="myoption"
@@ -27,31 +27,33 @@
 </template>
 <script>
 import { ScryfallApi } from "@/api";
+import { search } from "@/store";
 export default {
   data() {
     return {
       autoCompleteList: [],
-      search: "",
+      search,
+      flag: true,
     };
-
-    7;
   },
   methods: {
-    changeInputMain(any) {
+    changeInput(any) {
       this.search = any;
+      this.autoCompleteList = [];
     },
     handleBlur() {
       setTimeout(() => {
-        this.autoCompleteList = [];
-      }, 100);
+        this.flag = false;
+      }, 150); // Delay for a brief moment
     },
   },
   watch: {
     search: async function (value) {
       // binding this to the data value in the email input
 
-      this.searchMainDeck = value;
+      this.search = value;
       let result = await ScryfallApi.getListofCardNames(value);
+      this.flag = true;
       this.autoCompleteList = result.data.data;
     },
   },

@@ -13,6 +13,7 @@
     "dotenv": "^16.4.5",
     "firebase": "^10.10.0",
     "vue": "^3.2.13",
+    "vue-image-crop-upload": "^3.0.3",
     "vue-router": "^4.3.0",
     "vue-star-rating": "^2.1.0"
   },

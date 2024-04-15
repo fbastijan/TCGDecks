@@ -1,3 +1,5 @@
+let search = ref("");
+
 const komentari = [
   {
     name: "Marko",
@@ -74,5 +76,6 @@ const komentari = [
 import { ref } from "vue";
 const UserData = {
   currentUser: ref("test@test.hr"),
+  currentUserId: ref(""),
 };
-export { komentari, UserData };
+export { komentari, UserData, search };

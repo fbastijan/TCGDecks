@@ -1,22 +1,24 @@
 <template>
   <div class="row mt-5 mx-3">
+    <!-- Editor -->
     <div class="col">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title display-5">Editor</h5>
           <img
-            src="https://placehold.co/150"
+            :src="this.playerAndDeck.imgUrl"
             class="rounded-circle mb-2"
             alt=""
           />
           <div>
-            <a href="#">change image</a>
+            <a href="#" @click="this.show = true">change image</a>
           </div>
           <input
             class="form-control my-3"
             type="text"
             placeholder="Deck name"
             aria-label="default input example"
+            v-model="playerAndDeck.deckName"
           />
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -68,38 +70,31 @@
                 ></textarea>
                 <div class="row g-3">
                   <div class="col-auto">
+                    <auto-complete></auto-complete>
+                  </div>
+                  <div class="col-2">
                     <input
                       class="form-control"
-                      placeholder="Card Name"
-                      v-model="searchMainDeck"
-                      @focus="inputflag = true"
-                      @blur="handleBlur"
+                      placeholder="Qty"
+                      type="number"
+                      v-model="copies"
                     />
-                    <select
-                      style="position: absolute; z-index: 3; width: auto"
-                      class="form-select"
-                      multiple
-                      aria-label="multiple select example"
-                      v-if="autoCompleteList.length > 0 /* && inputflag */"
-                    >
-                      <option
-                        class="myoption"
-                        v-for="(card, index) in autoCompleteList"
-                        :key="index"
-                        :value="card"
-                        @click="changeInputMain(card)"
-                      >
-                        {{ card }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="col-auto">
-                    <button class="btn btn-primary mb-3">Dodaj na listu</button>
                   </div>
                   <div class="col-auto">
                     <button
                       class="btn btn-primary mb-3"
-                      @click="completeList()"
+                      @click="addToMainList()"
+                    >
+                      Dodaj na listu
+                    </button>
+                  </div>
+                  <div class="col-auto">
+                    <button
+                      class="btn btn-primary mb-3"
+                      @click="
+                        completeList();
+                        uploadDeck();
+                      "
                     >
                       Confirm list
                     </button>
@@ -128,10 +123,15 @@
                 ></textarea>
                 <div class="row g-3">
                   <div class="col-auto">
-                    <input class="form-control" placeholder="Card Name" />
+                    <auto-complete></auto-complete>
                   </div>
                   <div class="col-auto">
-                    <button class="btn btn-primary mb-3">Dodaj na listu</button>
+                    <button
+                      class="btn btn-primary mb-3"
+                      @click="addToSideboardList()"
+                    >
+                      Dodaj na listu
+                    </button>
                   </div>
                   <div class="col-auto">
                     <button
@@ -149,99 +149,127 @@
       </div>
     </div>
     <div class="col-lg-8 col-sm-1">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title display-5">Deck Name</h5>
-          <img
-            src="https://placehold.co/150"
-            class="rounded-circle mb-2"
-            alt=""
-          />
-          <h6 class="card-subtitle mb-2 text-muted">by: player 1</h6>
-          <div class="row">
-            <div class="col">
-              <h5 class="card-title">Main Deck</h5>
-              <ul class="list-group list-group-flush my-3">
-                <li
-                  class="list-group-item d-flex flex-row"
-                  v-for="(card, index) in this.MainDeck"
-                  :key="index"
-                >
-                  {{ card }}
-                </li>
-                <li class="list-group-item d-flex flex-row">
-                  4 Lightning bolt
-                </li>
-              </ul>
-              <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
-                60 Cards
-              </h6>
-            </div>
-
-            <div class="col">
-              <h5 class="card-title">Side Deck</h5>
-              <ul class="list-group list-group-flush my-3">
-                <li
-                  class="list-group-item d-flex flex-row"
-                  v-for="(card, index) in this.Sideboard"
-                  :key="index"
-                >
-                  {{ card }}
-                </li>
-              </ul>
-              <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
-                15 Cards
-              </h6>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Deck preview -->
+      <entire-deck
+        :mainDeck="MainDeck"
+        :sideboard="Sideboard"
+        :deckAndPlayer="playerAndDeck"
+      ></entire-deck>
+    </div>
+    <div>
+      <my-upload
+        @crop-success="cropSuccess"
+        field="img"
+        v-model="show"
+        :width="100"
+        :height="100"
+        img-format="png"
+        langType="en"
+        :noCircle="true"
+      ></my-upload>
     </div>
   </div>
 </template>
 <script>
-import { ScryfallApi } from "@/api.js";
-
+import InputAutocompleteVue from "@/components/InputAutocomplete.vue";
+import { search } from "@/store";
+import { ScryfallApi } from "@/api";
+import { UserData } from "@/store";
+import { db, storage } from "@/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import EntireDeckCardVue from "@/components/EntireDeckCard.vue";
+import myUpload from "vue-image-crop-upload";
+import { ref, uploadString } from "firebase/storage";
 export default {
-  components: {},
+  components: {
+    "auto-complete": InputAutocompleteVue,
+    "entire-deck": EntireDeckCardVue,
+    "my-upload": myUpload,
+  },
   data() {
     return {
-      editorMain:
-        "1 Aclazotz, Deepest Betrayal\n3 Cut Down\n4 Darkslick Shores\n4 Deep-Cavern Bat\n2 Ertai Resurrected\n3 Faerie Mastermind\n1 Gix, Yawgmoth Praetor\n4 Go for the Throat\n3 Preacher of the Schism\n1 Lazav, Wearer of Faces\n4 Make Disappear\n3 Mirrex\n1 Otawara, Soaring City\n1 Preacher of the Schism\n2 Underground River\n2 Sheoldred, the Apocalypse\n4 Spyglass Siren\n1 Takenuma, Abandoned Mire\n2 Underground River\n3 Swamp\n3 Island\n3 Restless Reef\n2 Gix, Yawgmoth Praetor\n3 Shipwreck Marsh",
-      editorSide:
-        "1 Aclazotz, Deepest Betrayal\n1 Blot Out\n1 Cut Down\n1 Disdainful Stroke\n3 Glistening Deluge\n1 Disdainful Stroke\n2 Spell Pierce\n2 Tishana's Tidebinder\n1 Unlicensed Hearse\n2 Liliana of the Veil",
       MainDeck: [],
       Sideboard: [],
-      autoCompleteList: [],
-      searchMainDeck: "",
-      searchSideBoard: "",
-      inputflag: false,
+      show: false,
+      imgDataUrl: "https://placehold.co/100",
+      UserData,
+      editorMain: "",
+      editorSide: "",
+      copies: NaN,
+      search,
+      ScryfallApi,
+      playerAndDeck: {
+        deckName: "",
+        playerName: UserData.currentUser,
+        imgUrl: this.imgDataUrl,
+      },
     };
   },
-  watch: {
-    searchMainDeck: async function (value) {
-      // binding this to the data value in the email input
 
-      this.searchMainDeck = value;
-      let result = await ScryfallApi.getListofCardNames(value);
-      this.autoCompleteList = result.data.data;
-    },
-  },
   async mounted() {
     this.completeList();
   },
   methods: {
+    async cropSuccess(imgDataUrl) {
+      this.playerAndDeck.imgUrl = imgDataUrl;
+    },
+
+    async uploadImage(deckId) {
+      const storageRef = ref(storage, "deckIcons/" + deckId);
+      try {
+        await uploadString(storageRef, this.playerAndDeck.imgUrl, "data_url");
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async uploadDeck() {
+      try {
+        const docRef = await addDoc(collection(db, "decks"), {
+          userId: UserData.currentUserId.value,
+          mainDeck: this.MainDeck,
+          sideboard: this.Sideboard,
+          playerAndDeck: this.playerAndDeck,
+          createdAt: new Date(),
+        });
+        this.uploadImage(docRef.id);
+        this.$router.push("/deck/" + docRef.id);
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    },
+    async getList() {
+      let res = await ScryfallApi.searchCollection(this.editorMain);
+      this.MainDeck = res.data;
+    },
     completeList() {
-      this.MainDeck = this.editorMain.split("\n");
-      this.Sideboard = this.editorSide.split("\n");
+      this.MainDeck = this.editorMain
+        .split("\n")
+        .filter((el) => el.trim() !== "");
+      this.MainDeck = this.MainDeck.map((card) => {
+        const firstSpaceIndex = card.indexOf(" ");
+        const qty = card.substring(0, firstSpaceIndex);
+        const name = card.substring(firstSpaceIndex + 1);
+
+        return { qty: qty, name: name };
+      });
+      this.Sideboard = this.editorSide
+        .split("\n")
+        .filter((el) => el.trim() !== "");
+      this.Sideboard = this.Sideboard.map((card) => {
+        const firstSpaceIndex = card.indexOf(" ");
+        const qty = card.substring(0, firstSpaceIndex);
+        const name = card.substring(firstSpaceIndex + 1);
+        return { qty: qty, name: name };
+      });
     },
-    changeInputMain(any) {
-      this.searchMainDeck = any;
+    addToMainList() {
+      this.editorMain =
+        this.editorMain + "\n" + this.copies + " " + this.search;
     },
-    handleBlur() {
-      setTimeout(() => {
-        this.autoCompleteList = [];
-      }, 100);
+    addToSideboardList() {
+      this.editorSide =
+        this.editorSide + "\n" + this.copies + " " + this.search;
     },
   },
 };
