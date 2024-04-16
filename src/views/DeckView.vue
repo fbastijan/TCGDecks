@@ -11,62 +11,25 @@
       <div class="col-sm-12 col-lg-4 mt-5">
         <div class="card">
           <h5 class="card-title my-3">Other decks</h5>
-          <h6 class="card-subtitle mb-2 text-muted">by: player 1</h6>
+          <h6 class="card-subtitle mb-2 text-muted">
+            {{ deck.playerAndDeck.playerName }}
+          </h6>
           <div class="card-body">
             <ul class="list-group list-group-flush my-3">
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Mono Red Burn</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Rakdos Midrange</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
-              </li>
-              <li class="list-group-item d-flex flex-row">
-                <a href="#" class="text-decoration-none">Other deck</a>
+              <li
+                class="list-group-item d-flex"
+                v-for="(decks, index) in this.bonus"
+                :key="index"
+              >
+                <a
+                  href="#"
+                  @click="this.$router.push('/deck/' + decks.deckId)"
+                  class="text-decoration-none"
+                  >{{ decks.playerAndDeck.deckName }}</a
+                >
+                <p class="text-muted ms-auto">
+                  {{ this.preracunajDatum(decks.createdAt) }}
+                </p>
               </li>
             </ul>
           </div>
@@ -133,8 +96,17 @@ import { komentari } from "@/store";
 import EntireDeckCard from "@/components/EntireDeckCard.vue";
 import { db } from "@/firebase";
 import { doc, getDoc } from "firebase/firestore";
-
+import moment from "moment";
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 export default {
+  computed: {},
   components: {
     "komentar-comp": KomentarVue,
     "entire-deck": EntireDeckCard,
@@ -142,15 +114,53 @@ export default {
   async mounted() {
     await this.getDeck();
   },
+  watch: {
+    async $route() {
+      this.getDeck();
+    },
+  },
   methods: {
+    preracunajDatum(datum) {
+      return moment(datum.toDate()).fromNow();
+    },
     async getDeck() {
       try {
         const docRef = doc(db, "decks", this.$route.params.id);
         const docSnap = await getDoc(docRef);
         this.deck = docSnap.data();
-        console.log(this.deck);
+        try {
+          this.bonus = await this.getAllDecks();
+        } catch (e) {
+          console.error(e);
+        }
       } catch (e) {
         console.error(e);
+      }
+    },
+
+    async getAllDecks() {
+      try {
+        const q = query(
+          collection(db, "decks"),
+          where("userId", "==", this.deck.userId),
+          orderBy("createdAt", "desc"),
+          limit(20)
+        );
+        try {
+          const querySnapshot = await getDocs(q);
+          let helper = [];
+          querySnapshot.forEach((doc) => {
+            helper.push({ deckId: doc.id, ...doc.data() });
+          });
+
+          return helper;
+        } catch (e) {
+          console.error(e);
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+        return;
       }
     },
   },
@@ -160,6 +170,7 @@ export default {
       showMore: 3,
       rating: 0,
       deck: { playerAndDeck: { deckName: "" }, sideboard: [], mainDeck: [] },
+      bonus: [],
     };
   },
 };

@@ -7,63 +7,51 @@
 </template>
 <script>
 import DeckCard from "@/components/DeckCard.vue";
+import { db } from "@/firebase";
+import { getDocs, collection, query, where, limit } from "firebase/firestore";
 export default {
   components: {
     DeckCard,
   },
+
+  async mounted() {
+    this.decks = await this.getAllDecks();
+    console.log(this.$route.params.keyWords);
+  },
+  methods: {
+    async getMoreData() {
+      this.limiter += 10;
+      this.decks = await this.getAllDecks();
+    },
+    async getAllDecks() {
+      try {
+        const q = query(
+          collection(db, "decks"),
+          where("playerAndDeck.deckName", "==", this.$route.params.keyWords),
+
+          limit(this.limiter)
+        );
+        try {
+          const querySnapshot = await getDocs(q);
+          let helper = [];
+          querySnapshot.forEach((doc) => {
+            helper.push({ deckId: doc.id, ...doc.data() });
+          });
+
+          return helper;
+        } catch (e) {
+          console.error(e);
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+        return;
+      }
+    },
+  },
   data() {
     return {
-      decks: [
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-      ],
+      decks: [],
     };
   },
 };

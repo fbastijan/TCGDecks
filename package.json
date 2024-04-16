@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "dotenv": "^16.4.5",
     "firebase": "^10.10.0",
+    "moment": "^2.30.1",
     "vue": "^3.2.13",
     "vue-image-crop-upload": "^3.0.3",
     "vue-router": "^4.3.0",
