@@ -95,6 +95,7 @@ onAuthStateChanged(auth, (user) => {
     console.log("*** User", user.email);
     UserData.currentUser.value = user.email;
     UserData.currentUserId.value = user.uid;
+    localStorage.setItem("userId", user.uid);
 
     if (!currentRoute.value.meta.needsUser) {
       router.push("/");

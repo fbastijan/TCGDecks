@@ -1,14 +1,18 @@
 <template>
   <div class="col">
     <div class="card">
-      <img :src="this.info.imgUrl" class="card-img-top" alt="..." />
+      <img
+        :src="this.info.playerAndDeck.imgUrl"
+        class="card-img-top"
+        alt="..."
+      />
       <div class="card-body">
         <a class="text-decoration-none" href="#"
           ><RouterLink :to="'/deck/' + this.info.deckId">
-            {{ this.info.name }}</RouterLink
+            {{ this.info.playerAndDeck.deckName }}</RouterLink
           ></a
         >
-        <p>Rating: {{ info.rating }}</p>
+        <p>Rating: {{ info.playerAndDeck.rating }}</p>
       </div>
     </div>
   </div>

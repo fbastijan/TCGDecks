@@ -1,5 +1,5 @@
 <template>
-  <div class="card shadow">
+  <div class="card shadow" style="min-height: 100vh">
     <div class="card-body">
       <h5 class="card-title display-5">{{ deckAndPlayer.deckName }}</h5>
       <img :src="deckAndPlayer.imgUrl" class="rounded-circle mb-2" alt="" />

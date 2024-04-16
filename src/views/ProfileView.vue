@@ -31,71 +31,85 @@
           <deck-card :info="card"></deck-card>
         </div>
       </div>
+      <button
+        v-if="decks.length == limiter"
+        @click="getMoreData"
+        class="btn btn-primary mb-3 bg-dark more-button"
+      >
+        Show 10 more
+      </button>
     </div>
     <div class="col"></div>
   </div>
 </template>
 <script>
 import DeckCard from "@/components/DeckCard.vue";
+import { db } from "@/firebase";
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 
 export default {
   components: {
     "deck-card": DeckCard,
   },
+  async mounted() {
+    this.decks = await this.getAllDecks();
+  },
   data() {
     return {
-      decks: [
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-        {
-          imgUrl:
-            "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/b/b5/Raffine.jpg/revision/latest/scale-to-width-down/807?cb=20220617021534",
-          name: "afasfafa",
-          rating: 4.49,
-          deckId: "1",
-        },
-      ],
+      decks: [],
+      limiter: 10,
+      lastVisible: "",
     };
+  },
+
+  methods: {
+    async getMoreData() {
+      this.limiter += 10;
+      this.decks = await this.getAllDecks();
+    },
+    async getAllDecks() {
+      try {
+        const q = query(
+          collection(db, "decks"),
+          where("userId", "==", localStorage.getItem("userId")),
+          orderBy("createdAt", "desc"),
+          limit(this.limiter)
+        );
+        try {
+          const querySnapshot = await getDocs(q);
+          let helper = [];
+          querySnapshot.forEach((doc) => {
+            helper.push({ deckId: doc.id, ...doc.data() });
+          });
+          this.lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+          return helper;
+        } catch (e) {
+          console.error(e);
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+        return;
+      }
+    },
   },
 };
 </script>
+<style>
+.more-button:not(:hover) {
+  border-color: #eeeeee;
+  color: #eeeeee;
+}
+.more-button:hover {
+  background-color: #eeeeee;
+  color: #222831;
+  border-color: #eeeeee;
+}
+</style>

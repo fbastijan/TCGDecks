@@ -191,17 +191,18 @@ export default {
       MainDeck: [],
       Sideboard: [],
       show: false,
-      imgDataUrl: "https://placehold.co/100",
+
       UserData,
       editorMain: "",
       editorSide: "",
-      copies: NaN,
+      copies: 0,
       search,
       ScryfallApi,
       playerAndDeck: {
         deckName: "",
         playerName: UserData.currentUser,
-        imgUrl: this.imgDataUrl,
+        imgUrl: this.imgDataUrl || "https://placehold.co/100",
+        rating: 0.0,
       },
     };
   },
