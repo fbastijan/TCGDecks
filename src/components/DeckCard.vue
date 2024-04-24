@@ -12,7 +12,10 @@
             {{ this.info.playerAndDeck.deckName }}</RouterLink
           ></a
         >
-        <p>Rating: {{ info.playerAndDeck.rating }}</p>
+        <p>
+          Rating:
+          {{ info.playerAndDeck.rating / info.playerAndDeck.ratingCount }}
+        </p>
       </div>
     </div>
   </div>
