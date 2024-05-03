@@ -7,6 +7,7 @@ import DeckView from "@/views/DeckView.vue";
 import CreatorView from "@/views/CreatorView.vue";
 import SearchResultView from "@/views/SearchResultView.vue";
 import { UserData } from "@/store";
+import ProfileEditorView from "@/views/ProfileEditorView.vue";
 const routes = [
   {
     path: "/login",
@@ -53,6 +54,13 @@ const routes = [
   {
     path: "/search/:keyWords/result",
     component: SearchResultView,
+    meta: {
+      needsUser: true,
+    },
+  },
+  {
+    path: "/profile/Editor",
+    component: ProfileEditorView,
     meta: {
       needsUser: true,
     },

@@ -4,11 +4,16 @@
     <div class="col-lg-8 col-sm-12 mt-3">
       <div class="row">
         <div class="col">
-          <img src="https://placehold.co/200" class="rounded-circle" alt="" />
+          <img
+            :src="imgUrl || 'https://placehold.co/200'"
+            class="rounded-circle"
+            alt="https://placehold.co/200"
+          />
 
           <h2 class="h2">
-            Filip Bastijanić
-            <button class="btn">
+            {{ displayName }}
+
+            <button class="btn" @click="this.$router.push('profile/editor')">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -45,6 +50,8 @@
 <script>
 import DeckCard from "@/components/DeckCard.vue";
 import { db } from "@/firebase";
+import { getAuth } from "firebase/auth";
+
 import {
   getDocs,
   collection,
@@ -60,16 +67,34 @@ export default {
   },
   async mounted() {
     this.decks = await this.getAllDecks();
+    this.getUserInfo();
   },
   data() {
     return {
       decks: [],
       limiter: 10,
       lastVisible: "",
+      imgUrl: "",
+      displayName: "",
     };
   },
 
   methods: {
+    async getUserInfo() {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user !== null) {
+        // The user object has basic properties such as display name, email, etc.
+        const displayName = user.displayName;
+        const email = user.email;
+        const photoURL = user.photoURL;
+
+        if (displayName == null) this.displayName = email;
+        else this.displayName = displayName;
+        this.imgUrl = photoURL;
+        console.log(displayName, email);
+      }
+    },
     async getMoreData() {
       this.limiter += 10;
       this.decks = await this.getAllDecks();

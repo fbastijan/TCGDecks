@@ -123,6 +123,7 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
+
 export default {
   computed: {},
   components: {
@@ -170,6 +171,11 @@ export default {
     },
     async PostComment() {
       try {
+        if (!UserData.currentUser.value) {
+          alert("You must login to post comments!");
+          this.$router.push("/login");
+          return;
+        }
         const docRef = collection(db, "comments");
         const newComment = {
           deckId: this.$route.params.id,

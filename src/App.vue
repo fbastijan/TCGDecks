@@ -104,6 +104,7 @@ onAuthStateChanged(auth, (user) => {
     // User is not signed in.
     console.log("*** No user");
     UserData.currentUser.value = null;
+    UserData.currentUserId.value = null;
 
     if (currentRoute.value.meta.needsUser) {
       router.push("/login");
