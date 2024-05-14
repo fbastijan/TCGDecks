@@ -68,6 +68,7 @@
 import { getAuth, updateProfile } from "firebase/auth";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { storage } from "@/firebase";
+import { UserData } from "@/store";
 import myUpload from "vue-image-crop-upload";
 export default {
   components: {
@@ -108,28 +109,17 @@ export default {
           displayName: this.displayName,
           photoURL: this.imgUrl,
         });
+        this.$router.push("/profile");
       } catch (err) {
         console.error(err);
         throw err;
       }
     },
     getProfile() {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (user !== null) {
-        // The user object has basic properties such as display name, email, etc.
-        const displayName = user.displayName;
-
-        const photoURL = user.photoURL;
-        const email = user.email;
-
-        this.uid = user.uid;
-        if (displayName == null) this.displayName = email;
-        else this.displayName = displayName;
-
-        this.imgUrl = photoURL;
-      }
-      console.log(user);
+      this.imgUrl = UserData.currentUserimgUrl;
+      this.displayName = UserData.currentUserDisplayName;
+      if (this.displayName == "") this.displayName = UserData.currentUser;
+      this.uid = UserData.currentUserId;
     },
   },
   data() {
@@ -138,6 +128,7 @@ export default {
       imgUrl: "",
       show: false,
       uid: "",
+      UserData,
     };
   },
 };

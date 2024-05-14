@@ -95,7 +95,8 @@ onAuthStateChanged(auth, (user) => {
     console.log("*** User", user.email);
     UserData.currentUser.value = user.email;
     UserData.currentUserId.value = user.uid;
-    localStorage.setItem("userId", user.uid);
+    UserData.currentUserDisplayName.value = user.displayName;
+    UserData.currentUserimgUrl.value = user.photoURL;
 
     if (!currentRoute.value.meta.needsUser) {
       router.push("/");
@@ -105,6 +106,8 @@ onAuthStateChanged(auth, (user) => {
     console.log("*** No user");
     UserData.currentUser.value = null;
     UserData.currentUserId.value = null;
+    UserData.currentUserDisplayName.value = null;
+    UserData.currentUserimgUrl.value = null;
 
     if (currentRoute.value.meta.needsUser) {
       router.push("/login");

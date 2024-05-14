@@ -8,6 +8,7 @@ import CreatorView from "@/views/CreatorView.vue";
 import SearchResultView from "@/views/SearchResultView.vue";
 import { UserData } from "@/store";
 import ProfileEditorView from "@/views/ProfileEditorView.vue";
+import DeckEditor from "@/views/DeckEditor.vue";
 const routes = [
   {
     path: "/login",
@@ -47,6 +48,13 @@ const routes = [
   {
     path: "/decklist/creator",
     component: CreatorView,
+    meta: {
+      needsUser: true,
+    },
+  },
+  {
+    path: "/decklist/:id/editor",
+    component: DeckEditor,
     meta: {
       needsUser: true,
     },

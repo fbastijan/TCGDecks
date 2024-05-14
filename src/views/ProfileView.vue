@@ -50,7 +50,7 @@
 <script>
 import DeckCard from "@/components/DeckCard.vue";
 import { db } from "@/firebase";
-import { getAuth } from "firebase/auth";
+import { UserData } from "@/store";
 
 import {
   getDocs,
@@ -76,24 +76,16 @@ export default {
       lastVisible: "",
       imgUrl: "",
       displayName: "",
+      UserData,
     };
   },
 
   methods: {
     async getUserInfo() {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (user !== null) {
-        // The user object has basic properties such as display name, email, etc.
-        const displayName = user.displayName;
-        const email = user.email;
-        const photoURL = user.photoURL;
-
-        if (displayName == null) this.displayName = email;
-        else this.displayName = displayName;
-        this.imgUrl = photoURL;
-        console.log(displayName, email);
-      }
+      this.imgUrl = UserData.currentUserimgUrl;
+      this.displayName = UserData.currentUserDisplayName;
+      if (this.displayName == "") this.displayName = UserData.currentUser;
+      this.uid = UserData.currentUserId;
     },
     async getMoreData() {
       this.limiter += 10;
@@ -103,7 +95,7 @@ export default {
       try {
         const q = query(
           collection(db, "decks"),
-          where("userId", "==", localStorage.getItem("userId")),
+          where("userId", "==", UserData.currentUserId.value),
           orderBy("createdAt", "desc"),
           limit(this.limiter)
         );
