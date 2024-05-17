@@ -3,7 +3,14 @@
     <div class="card-body">
       <h5 class="card-title display-5">
         {{ deckAndPlayer.deckName }}
-        <a href="#" class="btn">
+        <a
+          v-if="this.$route.fullPath.indexOf('decklist') == -1"
+          href="#"
+          class="btn"
+          @click="
+            this.$router.push('/decklist/' + this.$route.params.id + '/editor')
+          "
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

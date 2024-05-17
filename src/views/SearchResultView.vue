@@ -16,7 +16,7 @@ export default {
 
   async mounted() {
     this.decks = await this.getAllDecks();
-    console.log(this.$route.params.keyWords);
+    console.log(this.$route.params.keyWords.split(" "));
   },
   methods: {
     async getMoreData() {
@@ -25,9 +25,10 @@ export default {
     },
     async getAllDecks() {
       try {
+        let tokens = this.$route.params.keyWords.toLowerCase().split(" ");
         const q = query(
           collection(db, "decks"),
-          where("playerAndDeck.deckName", "==", this.$route.params.keyWords),
+          where("playerAndDeck.keywords", "array-contains-any", tokens),
 
           limit(this.limiter)
         );

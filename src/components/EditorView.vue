@@ -1,5 +1,11 @@
 <template>
-  <div class="row mt-5 mx-3">
+  <div
+    class="row mt-5 mx-3"
+    v-if="
+      (this.playerAndDeck.userId = UserData.currentUserId) &&
+      !this.$route.params.id
+    "
+  >
     <!-- Editor -->
     <div class="col mb-3">
       <div class="card">
@@ -208,6 +214,7 @@ export default {
         playerName: UserData.currentUser,
         imgUrl: this.imgDataUrl || "https://placehold.co/100",
         rating: 0.0,
+        keywords: [],
       },
     };
   },
@@ -221,8 +228,8 @@ export default {
   methods: {
     async reverseParse(main, side) {
       main.forEach((element) => {
-        this.editorMain = this.editorMain =
-          element.qty + " " + element.name + "\n";
+        this.editorMain =
+          this.editorMain + element.qty + " " + element.name + "\n";
       });
       side.forEach((element) => {
         this.editorSide =
@@ -236,7 +243,7 @@ export default {
         let deck = docSnap.data();
 
         this.MainDeck = deck.mainDeck;
-        this.sideboard = deck.sideboard;
+        this.Sideboard = deck.sideboard;
         this.playerAndDeck = deck.playerAndDeck;
       } catch (e) {
         console.error(e);
@@ -271,6 +278,10 @@ export default {
           this.$router.push("/deck/" + deckRef.id);
         } catch {
           try {
+            let keywordTokens = this.playerAndDeck.deckName
+              .toLowerCase()
+              .split(" ");
+            this.playerAndDeck.keywords.push(...keywordTokens);
             const docRef = await addDoc(collection(db, "decks"), {
               userId: UserData.currentUserId.value,
               mainDeck: this.MainDeck,
@@ -299,6 +310,8 @@ export default {
         const firstSpaceIndex = card.indexOf(" ");
         const qty = card.substring(0, firstSpaceIndex);
         const name = card.substring(firstSpaceIndex + 1);
+        let tokens = name.toLowerCase().split(" ");
+        this.playerAndDeck.keywords.push(...tokens);
 
         return { qty: qty, name: name };
       });
@@ -309,6 +322,8 @@ export default {
         const firstSpaceIndex = card.indexOf(" ");
         const qty = card.substring(0, firstSpaceIndex);
         const name = card.substring(firstSpaceIndex + 1);
+        let tokens = name.toLowerCase().split(" ");
+        this.playerAndDeck.keywords.push(...tokens);
         return { qty: qty, name: name };
       });
 
