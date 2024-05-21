@@ -97,7 +97,7 @@ onAuthStateChanged(auth, (user) => {
     UserData.currentUserId.value = user.uid;
     UserData.currentUserDisplayName.value = user.displayName;
     UserData.currentUserimgUrl.value = user.photoURL;
-
+    localStorage.setItem("UserId", user.uid);
     if (!currentRoute.value.meta.needsUser) {
       router.push("/");
     }
@@ -108,6 +108,7 @@ onAuthStateChanged(auth, (user) => {
     UserData.currentUserId.value = null;
     UserData.currentUserDisplayName.value = null;
     UserData.currentUserimgUrl.value = null;
+    localStorage.removeItem("UserId");
 
     if (currentRoute.value.meta.needsUser) {
       router.push("/login");

@@ -69,6 +69,9 @@ export default {
     this.decks = await this.getAllDecks();
     this.getUserInfo();
   },
+  async oncreated() {
+    this.decks = await this.getAllDecks();
+  },
   data() {
     return {
       decks: [],
@@ -93,9 +96,12 @@ export default {
     },
     async getAllDecks() {
       try {
+        let data = localStorage.getItem("UserId");
+
+        console.log(data);
         const q = query(
           collection(db, "decks"),
-          where("userId", "==", UserData.currentUserId.value),
+          where("userId", "==", data),
           orderBy("createdAt", "desc"),
           limit(this.limiter)
         );

@@ -43,7 +43,7 @@
             </li>
           </ul>
           <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
-            60 Cards
+            {{ this.getCount(this.mainDeck) }} cards
           </h6>
         </div>
 
@@ -59,7 +59,7 @@
             </li>
           </ul>
           <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
-            15 Cards
+            {{ this.getCount(this.sideboard) }} cards
           </h6>
         </div>
       </div>
@@ -68,6 +68,16 @@
 </template>
 <script>
 export default {
+  methods: {
+    getCount(array) {
+      let count = 0;
+      array.forEach((element) => {
+        count = count + parseInt(element.qty);
+      });
+
+      return count;
+    },
+  },
   props: ["mainDeck", "sideboard", "deckAndPlayer"],
 };
 </script>
