@@ -42,10 +42,17 @@
               {{ card.qty }}
               <a
                 href="#"
-                class="text-decoration-none"
+                class="text-decoration-none tooltip2"
+                @mouseover="
+                  this.current = '';
+                  this.getCardImageFromAPI(card.name).then((result) => {
+                    this.current = result;
+                  });
+                "
                 @click="this.$router.push('/card/' + card.name)"
-                >{{ card.name }}</a
-              >
+                >{{ card.name
+                }}<img class="tooltiptext" :src="this.current" :alt="card.name"
+              /></a>
             </li>
           </ul>
           <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
@@ -64,10 +71,17 @@
               {{ card.qty }}
               <a
                 href="#"
-                class="text-decoration-none"
+                class="text-decoration-none tooltip2"
                 @click="this.$router.push('/card/' + card.name)"
-                >{{ card.name }}</a
-              >
+                @mouseover="
+                  this.current = '';
+                  this.getCardImageFromAPI(card.name).then((result) => {
+                    this.current = result;
+                  });
+                "
+                >{{ card.name }}
+                <img class="tooltiptext" :src="this.current" :alt="card.name" />
+              </a>
             </li>
           </ul>
           <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
@@ -79,7 +93,13 @@
   </div>
 </template>
 <script>
+import { ScryfallApi } from "@/api";
 export default {
+  data() {
+    return {
+      current: "",
+    };
+  },
   methods: {
     getCount(array) {
       let count = 0;
@@ -89,7 +109,50 @@ export default {
 
       return count;
     },
+    async getCardImageFromAPI(cardName) {
+      let card = await ScryfallApi.getCardByName(cardName);
+      card = card.data;
+      let image = "";
+      if (card.image_uris) image = card.image_uris.small;
+      else image = card.card_faces[0].image_uris.small;
+      return image;
+    },
   },
   props: ["mainDeck", "sideboard", "deckAndPlayer"],
 };
 </script>
+<style>
+.tooltip2 {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip2 .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  background-color: none;
+  color: black;
+  text-align: center;
+  border-color: black;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 110%;
+}
+
+.tooltip2 .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+.tooltip2:hover .tooltiptext {
+  visibility: visible;
+}
+</style>
