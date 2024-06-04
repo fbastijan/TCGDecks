@@ -1,10 +1,7 @@
 <template>
   <div
     class="row mt-5 mx-3"
-    v-if="
-      (this.playerAndDeck.userId = UserData.currentUserId) &&
-      !this.$route.params.id
-    "
+    v-if="(this.playerAndDeck.userId = UserData.currentUserId)"
   >
     <!-- Editor -->
     <div class="col mb-3">

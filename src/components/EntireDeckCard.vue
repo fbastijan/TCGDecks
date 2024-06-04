@@ -39,7 +39,13 @@
               v-for="(card, index) in this.mainDeck"
               :key="index"
             >
-              {{ card.qty }} {{ card.name }}
+              {{ card.qty }}
+              <a
+                href="#"
+                class="text-decoration-none"
+                @click="this.$router.push('/card/' + card.name)"
+                >{{ card.name }}</a
+              >
             </li>
           </ul>
           <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">
@@ -55,7 +61,13 @@
               v-for="(card, index) in this.sideboard"
               :key="index"
             >
-              {{ card.qty }} {{ card.name }}
+              {{ card.qty }}
+              <a
+                href="#"
+                class="text-decoration-none"
+                @click="this.$router.push('/card/' + card.name)"
+                >{{ card.name }}</a
+              >
             </li>
           </ul>
           <h6 class="card-subtitle mb-2 d-flex flex-row-reverse fw-bold">

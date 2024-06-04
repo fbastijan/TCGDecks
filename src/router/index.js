@@ -9,6 +9,7 @@ import SearchResultView from "@/views/SearchResultView.vue";
 import { UserData } from "@/store";
 import ProfileEditorView from "@/views/ProfileEditorView.vue";
 import DeckEditor from "@/views/DeckEditor.vue";
+import CardView from "@/views/CardView.vue";
 const routes = [
   {
     path: "/login",
@@ -69,6 +70,13 @@ const routes = [
   {
     path: "/profile/Editor",
     component: ProfileEditorView,
+    meta: {
+      needsUser: true,
+    },
+  },
+  {
+    path: "/card/:name",
+    component: CardView,
     meta: {
       needsUser: true,
     },
