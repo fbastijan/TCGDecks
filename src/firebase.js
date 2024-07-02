@@ -2,8 +2,9 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDYuPEbcHd_KG6fMFHi1Rpqep1SFvhnKy8",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "tcg-decks.firebaseapp.com",
   projectId: "tcg-decks",
   storageBucket: "tcg-decks.appspot.com",

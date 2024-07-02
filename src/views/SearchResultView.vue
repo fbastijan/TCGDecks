@@ -16,7 +16,6 @@ export default {
 
   async mounted() {
     this.decks = await this.getAllDecks();
-    console.log(this.$route.params.keyWords.split(" "));
   },
   methods: {
     async getMoreData() {

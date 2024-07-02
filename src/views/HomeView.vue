@@ -41,6 +41,7 @@ export default {
       if (this.term) this.$router.push("/search/" + this.term + "/result");
     },
   },
+  mounted() {},
 };
 </script>
 
