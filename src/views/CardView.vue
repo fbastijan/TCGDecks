@@ -89,10 +89,14 @@ export default {
     };
   },
   async mounted() {
-    this.details = await ScryfallApi.getCardByName(this.$route.params.name);
-    this.details = this.details.data;
-    this.legalities = this.details.legalities;
-    console.log(this.details);
+    try {
+      this.details = await ScryfallApi.getCardByName(this.$route.params.name);
+      this.details = this.details.data;
+      this.legalities = this.details.legalities;
+      console.log(this.details);
+    } catch {
+      this.$router.push("/notFound");
+    }
   },
 };
 </script>

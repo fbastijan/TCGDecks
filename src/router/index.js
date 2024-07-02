@@ -10,6 +10,7 @@ import { UserData } from "@/store";
 import ProfileEditorView from "@/views/ProfileEditorView.vue";
 import DeckEditor from "@/views/DeckEditor.vue";
 import CardView from "@/views/CardView.vue";
+import NotFound from "@/views/NotFound.vue";
 const routes = [
   {
     path: "/login",
@@ -21,6 +22,13 @@ const routes = [
   {
     path: "/register",
     component: RegisterView,
+    meta: {
+      needsUser: false,
+    },
+  },
+  {
+    path: "/notFound",
+    component: NotFound,
     meta: {
       needsUser: false,
     },

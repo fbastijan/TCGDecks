@@ -75,9 +75,17 @@
                 @click="this.$router.push('/card/' + card.name)"
                 @mouseover="
                   this.current = '';
-                  this.getCardImageFromAPI(card.name).then((result) => {
-                    this.current = result;
-                  });
+                  try {
+                    this.getCardImageFromAPI(card.name)
+                      .then((result) => {
+                        this.current = result;
+                      })
+                      .catch(() => {
+                        this.current = '';
+                      });
+                  } catch {
+                    this.current = '';
+                  }
                 "
                 >{{ card.name }}
                 <img class="tooltiptext" :src="this.current" :alt="card.name" />
@@ -110,12 +118,16 @@ export default {
       return count;
     },
     async getCardImageFromAPI(cardName) {
-      let card = await ScryfallApi.getCardByName(cardName);
-      card = card.data;
-      let image = "";
-      if (card.image_uris) image = card.image_uris.small;
-      else image = card.card_faces[0].image_uris.small;
-      return image;
+      try {
+        let card = await ScryfallApi.getCardByName(cardName);
+        card = card.data;
+        let image = "";
+        if (card.image_uris) image = card.image_uris.small;
+        else image = card.card_faces[0].image_uris.small;
+        return image;
+      } catch {
+        return "";
+      }
     },
   },
   props: ["mainDeck", "sideboard", "deckAndPlayer"],
